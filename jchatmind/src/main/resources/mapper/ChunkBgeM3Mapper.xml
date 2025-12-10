@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kama.jchatmind.mapper.ChunkBgeM3Mapper">
+
+    <resultMap id="BaseResultMap" type="com.kama.jchatmind.model.entity.ChunkBgeM3">
+        <id property="id" column="id" jdbcType="VARCHAR"/>
+        <result property="kbId" column="kb_id" jdbcType="VARCHAR"/>
+        <result property="docId" column="doc_id" jdbcType="VARCHAR"/>
+        <result property="content" column="content" jdbcType="VARCHAR"/>
+        <result property="metadata" column="metadata" jdbcType="VARCHAR"/>
+        <result property="embedding" column="embedding" jdbcType="OTHER"/>
+        <result property="createdAt" column="created_at" jdbcType="TIMESTAMP"/>
+        <result property="updatedAt" column="updated_at" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,kb_id,doc_id,
+        content,metadata,embedding,
+        created_at,updated_at
+    </sql>
+
+    <insert id="insert" parameterType="com.kama.jchatmind.model.entity.ChunkBgeM3"
+            keyColumn="id" keyProperty="id" useGeneratedKeys="true">
+        INSERT INTO chunk_bge_m3
+        (kb_id,
+         doc_id,
+         content,
+         metadata,
+         embedding,
+         created_at,
+         updated_at)
+        VALUES (CAST(#{kbId} AS uuid),
+                CAST(#{docId} AS uuid),
+                #{content},
+                #{metadata},
+                #{embedding}::vector,
+                #{createdAt},
+                #{updatedAt})
+    </insert>
+
+    <select id="selectById" resultMap="BaseResultMap">
+        SELECT id,
+               kb_id,
+               doc_id,
+               content,
+               metadata,
+               embedding,
+               created_at,
+               updated_at
+        FROM chunk_bge_m3
+        WHERE id = CAST(#{id} AS uuid)
+    </select>
+
+    <delete id="deleteById">
+        DELETE
+        FROM chunk_bge_m3
+        WHERE id = CAST(#{id} AS uuid)
+    </delete>
+
+    <update id="updateById" parameterType="com.kama.jchatmind.model.entity.ChunkBgeM3">
+        UPDATE chunk_bge_m3
+        <set>
+            <if test="kbId != null">
+                kb_id = CAST(#{kbId} AS uuid),
+            </if>
+            <if test="docId != null">
+                doc_id = CAST(#{docId} AS uuid),
+            </if>
+            <if test="content != null">
+                content = #{content},
+            </if>
+            <if test="metadata != null">
+                metadata = #{metadata},
+            </if>
+            <if test="embedding != null">
+                embedding = #{embedding}::vector,
+            </if>
+            updated_at = NOW()
+        </set>
+        WHERE id = CAST(#{id} AS uuid)
+    </update>
+
+    <select id="similaritySearch" resultMap="BaseResultMap">
+        <![CDATA[
+        SELECT id,
+               kb_id,
+               doc_id,
+               content,
+               metadata,
+               embedding,
+               created_at,
+               updated_at
+        FROM chunk_bge_m3
+        WHERE kb_id = CAST(#{kbId} AS uuid)
+        ORDER BY embedding <-> #{vectorLiteral}::vector
+        LIMIT #{limit}
+        ]]>
+    </select>
+</mapper>

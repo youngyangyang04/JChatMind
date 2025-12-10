@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kama.jchatmind.mapper.AgentMapper">
+
+    <resultMap id="BaseResultMap" type="com.kama.jchatmind.model.entity.Agent">
+        <id property="id" column="id" jdbcType="VARCHAR"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="description" column="description" jdbcType="VARCHAR"/>
+        <result property="systemPrompt" column="system_prompt" jdbcType="VARCHAR"/>
+        <result property="model" column="model" jdbcType="VARCHAR"/>
+        <result property="allowedTools" column="allowed_tools" jdbcType="VARCHAR"/>
+        <result property="allowedKbs" column="allowed_kbs" jdbcType="VARCHAR"/>
+        <result property="chatOptions" column="chat_options" jdbcType="VARCHAR"/>
+        <result property="createdAt" column="created_at" jdbcType="TIMESTAMP"/>
+        <result property="updatedAt" column="updated_at" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,name,description,
+        system_prompt,model,allowed_tools,
+        allowed_kbs,chat_options,created_at,
+        updated_at
+    </sql>
+
+    <insert id="insert" parameterType="com.kama.jchatmind.model.entity.Agent"
+            keyColumn="id" keyProperty="id" useGeneratedKeys="true">
+        INSERT INTO agent
+        (name,
+         description,
+         system_prompt,
+         model,
+         allowed_tools,
+         allowed_kbs,
+         chat_options,
+         created_at,
+         updated_at)
+        VALUES (#{name},
+                #{description},
+                #{systemPrompt},
+                #{model},
+                CAST(#{allowedTools} AS jsonb),
+                CAST(#{allowedKbs} AS jsonb),
+                CAST(#{chatOptions} AS jsonb),
+                #{createdAt},
+                #{updatedAt})
+    </insert>
+
+    <select id="selectById" resultMap="BaseResultMap">
+        SELECT id,
+               name,
+               description,
+               system_prompt,
+               model,
+               allowed_tools::text AS allowed_tools,
+               allowed_kbs::text   AS allowed_kbs,
+               chat_options::text  AS chat_options,
+               created_at,
+               updated_at
+        FROM agent
+        WHERE id = CAST(#{id} AS uuid)
+    </select>
+
+    <select id="selectAll" resultMap="BaseResultMap">
+        SELECT id,
+               name,
+               description,
+               system_prompt,
+               model,
+               allowed_tools::text AS allowed_tools,
+               allowed_kbs::text   AS allowed_kbs,
+               chat_options::text  AS chat_options,
+               created_at,
+               updated_at
+        FROM agent
+        ORDER BY created_at DESC
+    </select>
+
+    <delete id="deleteById">
+        DELETE
+        FROM agent
+        WHERE id = CAST(#{id} AS uuid)
+    </delete>
+
+    <update id="updateById" parameterType="com.kama.jchatmind.model.entity.Agent">
+        UPDATE agent
+        <set>
+            <if test="name != null">
+                name = #{name},
+            </if>
+            <if test="description != null">
+                description = #{description},
+            </if>
+            <if test="systemPrompt != null">
+                system_prompt = #{systemPrompt},
+            </if>
+            <if test="model != null">
+                model = #{model},
+            </if>
+
+            <if test="allowedTools != null">
+                allowed_tools = CAST(#{allowedTools} AS jsonb),
+            </if>
+
+            <if test="allowedKbs != null">
+                allowed_kbs = CAST(#{allowedKbs} AS jsonb),
+            </if>
+
+            <if test="chatOptions != null">
+                chat_options = CAST(#{chatOptions} AS jsonb),
+            </if>
+            updated_at = NOW()
+        </set>
+
+        WHERE id = CAST(#{id} AS uuid)
+    </update>
+</mapper>

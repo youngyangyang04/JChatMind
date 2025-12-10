@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: jchatmind
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/jchatmind
+    username: postgres
+    password: 123456
+    driver-class-name: org.postgresql.Driver
+
+mybatis:
+  type-aliases-package: com.kama.jchatmind.model.entity
+  mapper-locations: classpath:mapper/*.xml
+  type-handlers-package: com.kama.jchatmind.typehandler
+
+# 文档存储配置
+document:
+  storage:
+    base-path: ./data/documents

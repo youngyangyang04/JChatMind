@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kama.jchatmind.mapper.DocumentMapper">
+
+    <resultMap id="BaseResultMap" type="com.kama.jchatmind.model.entity.Document">
+        <id property="id" column="id" jdbcType="VARCHAR"/>
+        <result property="kbId" column="kb_id" jdbcType="VARCHAR"/>
+        <result property="filename" column="filename" jdbcType="VARCHAR"/>
+        <result property="filetype" column="filetype" jdbcType="VARCHAR"/>
+        <result property="size" column="size" jdbcType="BIGINT"/>
+        <result property="metadata" column="metadata" jdbcType="VARCHAR"/>
+        <result property="createdAt" column="created_at" jdbcType="TIMESTAMP"/>
+        <result property="updatedAt" column="updated_at" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,kb_id,filename,
+        filetype,size,metadata,
+        created_at,updated_at
+    </sql>
+
+    <insert id="insert" parameterType="com.kama.jchatmind.model.entity.Document"
+            keyColumn="id" keyProperty="id" useGeneratedKeys="true">
+        INSERT INTO document
+        (
+            kb_id,
+            filename,
+            filetype,
+            size,
+            metadata,
+            created_at,
+            updated_at
+        )
+        VALUES
+            (
+                CAST(#{kbId} AS uuid),
+                #{filename},
+                #{filetype},
+                #{size},
+                CAST(#{metadata} AS jsonb),
+                #{createdAt},
+                #{updatedAt}
+            )
+    </insert>
+
+    <select id="selectById" resultMap="BaseResultMap">
+        SELECT
+            id,
+            kb_id,
+            filename,
+            filetype,
+            size,
+            metadata::text AS metadata,
+            created_at,
+            updated_at
+        FROM document
+        WHERE id = CAST(#{id} AS uuid)
+    </select>
+
+    <select id="selectAll" resultMap="BaseResultMap">
+        SELECT
+            id,
+            kb_id,
+            filename,
+            filetype,
+            size,
+            metadata::text AS metadata,
+            created_at,
+            updated_at
+        FROM document
+        ORDER BY updated_at DESC
+    </select>
+
+    <select id="selectByKbId" resultMap="BaseResultMap">
+        SELECT
+            id,
+            kb_id,
+            filename,
+            filetype,
+            size,
+            metadata::text AS metadata,
+            created_at,
+            updated_at
+        FROM document
+        WHERE kb_id = CAST(#{kbId} AS uuid)
+        ORDER BY updated_at DESC
+    </select>
+
+    <delete id="deleteById">
+        DELETE FROM document WHERE id = CAST(#{id} AS uuid)
+    </delete>
+
+    <update id="updateById" parameterType="com.kama.jchatmind.model.entity.Document">
+        UPDATE document
+        <set>
+            <if test="kbId != null">
+                kb_id = CAST(#{kbId} AS uuid),
+            </if>
+            <if test="filename != null">
+                filename = #{filename},
+            </if>
+            <if test="filetype != null">
+                filetype = #{filetype},
+            </if>
+            <if test="size != null">
+                size = #{size},
+            </if>
+            <if test="metadata != null">
+                metadata = CAST(#{metadata} AS jsonb),
+            </if>
+            updated_at = NOW()
+        </set>
+        WHERE id = CAST(#{id} AS uuid)
+    </update>
+</mapper>

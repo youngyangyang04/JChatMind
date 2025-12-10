@@ -1,0 +1,23 @@
+@import "tailwindcss";
+
+/* 修复 Ant Design Tabs 在 flex 布局中的滚动问题 */
+.ant-tabs {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.ant-tabs-content-holder {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.ant-tabs-content {
+  height: 100%;
+}
+
+.ant-tabs-tabpane {
+  height: 100%;
+  overflow: hidden;
+}
