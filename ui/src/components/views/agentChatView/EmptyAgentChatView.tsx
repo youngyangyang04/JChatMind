@@ -14,6 +14,7 @@ import {
   createChatSession,
 } from "../../../api/api.ts";
 import { getAgentEmoji } from "../../../utils";
+import { useChatSessions } from "../../../hooks/useChatSessions.ts";
 
 const { Title, Text } = Typography;
 
@@ -31,6 +32,7 @@ const EmptyAgentChatView: React.FC<DefaultAgentChatViewProps> = ({
   const [selectedAgentId, setSelectedAgentId] = useState<string | null>(null);
 
   const navigate = useNavigate();
+  const { refreshChatSessions } = useChatSessions();
 
   // 为每个 agent 生成 emoji
   const agentsWithEmoji = useMemo(() => {
@@ -165,9 +167,11 @@ const EmptyAgentChatView: React.FC<DefaultAgentChatViewProps> = ({
                 role: "user",
                 agentId: effectiveAgentId,
               });
+              // 刷新聊天会话列表
+              await refreshChatSessions();
               setMessage("");
               navigate(
-                `/chat/${response.chatSessionId}?agentId=${effectiveAgentId}`,
+                `/chat/${response.chatSessionId}`,
               );
             }}
             value={message}

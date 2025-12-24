@@ -10,6 +10,7 @@ import {
   getChatSession,
 } from "../../api/api.ts";
 import { useAgents } from "../../hooks/useAgents.ts";
+import { useChatSessions } from "../../hooks/useChatSessions.ts";
 import EmptyAgentChatView from "./agentChatView/EmptyAgentChatView.tsx";
 import type { ChatMessageVO, SseMessage, SseMessageType } from "../../types";
 
@@ -19,6 +20,7 @@ const AgentChatView: React.FC = () => {
   const { state } = useLocation();
   const [loading, setLoading] = useState(false);
   const { agents } = useAgents();
+  const { refreshChatSessions } = useChatSessions();
 
   const [messages, setMessages] = useState<ChatMessageVO[]>([]);
 
@@ -70,6 +72,8 @@ const AgentChatView: React.FC = () => {
           agentId: agentId,
           title: message.slice(0, 20),
         });
+        // 刷新聊天会话列表
+        await refreshChatSessions();
         // 导航到新创建的会话
         navigate(`/chat/${response.chatSessionId}`, {
           replace: true,
