@@ -21,13 +21,13 @@ spring:
             required: true
   ai:
     deepseek:
-      api-key: your-api-key
+      api-key: sk-c650f2a4ccd14d47aa189c6cea89fbad
       base-url: https://api.deepseek.com
       chat:
         options:
           model: deepseek-chat
     zhipuai:
-      api-key: your-api-key
+      api-key: 26073c1b7cf3485ebb32ff363b6659a6.1RkziyY9unxo5ttC
       base-url: https://open.bigmodel.cn/api/paas
       chat:
         options:
@@ -40,3 +40,6 @@ mybatis:
 document:
   storage:
     base-path: ./data/documents
+
+server:
+  port: 8081
