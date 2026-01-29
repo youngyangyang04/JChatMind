@@ -89,8 +89,7 @@ const EmptyAgentChatView: React.FC<DefaultAgentChatViewProps> = ({
               选择一个智能体助手开始聊天，或直接发送消息创建新会话
             </Text>
           </div>
-
-          <Space direction="vertical" size="large" className="w-full">
+          <Space orientation="vertical" size="large" className="w-full">
             <Card
               hoverable
               className="cursor-pointer transition-all hover:shadow-lg"
